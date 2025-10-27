@@ -18,8 +18,7 @@ Desplegament d’infraestructura
     - [FTP](#ftp)
     - [BBDD](#bbdd)
     - [SSH](#ssh)
-4. [Conclusions](conclusions)
-
+4. [Conclusions](#conclusions)
 
 ## Introducció
 En aquesta pràctica es prepara i desplega la infraestructura d’una aplicació multicapa que integra diversos serveis de xarxa i sistemes, com ara servidor web, monitor de xarxa, accés SSH, base de dades, serveis DHCP, DNS i FTP. L’objectiu és dissenyar, configurar i documentar un entorn complet que permeti el funcionament coordinat d’aquests serveis dins d’una arquitectura organitzada en diferents xarxes (DMZ, Intranet i NAT).
