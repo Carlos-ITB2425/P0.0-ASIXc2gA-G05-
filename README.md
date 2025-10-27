@@ -210,6 +210,111 @@ mysql>
 ```
 ---
 
+Hem decidit injectar la informació a través d’un LOAD TABLE del .csv, ja que ho vam considerar molt més pràctic que introduir les columnes una per una:
+
+```bash
+LOAD DATA INFILE '/var/lib/mysql-files/escuelas_barna_utf8.csv'
+INTO TABLE escuelas_barna_plana
+CHARACTER SET utf8mb4
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"' 
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(
+    -- Identificadors principals
+    @temp_register_id,
+    name,
+    @temp_institution_id,
+    institution_name,
+
+    -- Dates de creació i modificació
+    created,
+    modified,
+
+    -- Adreça
+    addresses_roadtype_id,
+    addresses_roadtype_name,
+    @temp_addresses_road_id,
+    addresses_road_name,
+    addresses_start_street_number,
+    addresses_end_street_number,
+    addresses_neighborhood_id,
+    addresses_neighborhood_name,
+    addresses_district_id,
+    addresses_district_name,
+    addresses_zip_code,
+    addresses_town,
+    @temp_addresses_main_address,
+    addresses_type,
+
+    -- Valors i atributs
+    @temp_values_id,
+    @temp_values_attribute_id,
+    values_category,
+    values_attribute_name,
+    values_value,
+    @temp_values_outstanding,
+    values_description,
+
+    -- Filtres secundaris
+    @temp_secondary_filters_id,
+    secondary_filters_name,
+    secondary_filters_fullpath,
+    secondary_filters_tree,
+    @temp_secondary_filters_asia_id,
+
+    -- Coordenades geogràfiques
+    @temp_geo_epgs_25831_x,  
+    @temp_geo_epgs_25831_y,  
+    @temp_geo_epgs_4326_lat, 
+    @temp_geo_epgs_4326_lon, 
+
+    -- Dates i horaris
+    estimated_dates,
+    @temp_start_date,
+    @temp_end_date,
+    timetable
+)
+```
+```bash
+SET 
+    -- Identificadors processats
+    register_id                = SUBSTRING(@temp_register_id, 2) + 0,
+    institution_id             = NULLIF(@temp_institution_id, ''),
+    values_id                  = NULLIF(@temp_values_id, ''),
+    secondary_filters_id       = NULLIF(@temp_secondary_filters_id, ''),
+    secondary_filters_asia_id  = NULLIF(@temp_secondary_filters_asia_id, ''),
+    values_attribute_id        = NULLIF(@temp_values_attribute_id, ''),
+    addresses_road_id          = NULLIF(@temp_addresses_road_id, ''),
+
+    -- Valors booleans
+    addresses_main_address     = IF(@temp_addresses_main_address = 'True', 1, 0),
+    values_outstanding         = IF(@temp_values_outstanding = 'True', 1, 0),
+
+    -- Dates
+    start_date                 = NULLIF(@temp_start_date, ''),
+    end_date                   = NULLIF(@temp_end_date, ''),
+
+    -- Coordenades
+    geo_epgs_25831_x           = NULLIF(@temp_geo_epgs_25831_x, ''),  
+    geo_epgs_25831_y           = NULLIF(@temp_geo_epgs_25831_y, ''), 
+    geo_epgs_4326_lat          = NULLIF(@temp_geo_epgs_4326_lat, ''), 
+    geo_epgs_4326_lon          = NULLIF(@temp_geo_epgs_4326_lon, '');
+```
+
+---
+
+Durant el procés vam patir diversos errors de codificació del CSV, per tant, vam haver de passar l’arxiu a utf-8 per evitar problemes.
+
+Una vegada hem fet les correccions, comprovem que les dades s’han inserit de forma correcta:
+
+```bash
+SELECT COUNT(*) FROM NOM_TAULA
+```
+
+![cap bbdd 5](./cap_mark/cap_bbdd_8.png)
+
+
 
 
 ### SSH
