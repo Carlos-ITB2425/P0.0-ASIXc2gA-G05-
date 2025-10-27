@@ -18,6 +18,7 @@ Desplegament d’infraestructura
     - [FTP](#ftp)
     - [BBDD](#bbdd)
     - [SSH](#ssh)
+4. [Conclusions](conclusions)
 
 
 ## Introducció
@@ -205,3 +206,5 @@ mysql>
 
 
 ### SSH
+
+## Conclusions
