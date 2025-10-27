@@ -184,7 +184,15 @@ Creem l’usuari bchecker amb els privilegis corresponents.
 
 Creació de la taula, i dels seus atributs:
 
+```bash
+show tables
+```
+
 ![cap bbdd 5](./cap_mark/cap_bbdd_6.png)
+
+```bash
+desc NOM_TAULA
+```
 
 ![cap bbdd 5](./cap_mark/cap_bbdd_7.png)
 
