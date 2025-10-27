@@ -42,12 +42,24 @@ Configurem el nom de l’equip (hostname) i la xarxa (adreça IP).
 
 Instal·lem Nginx.
 
+```bash
+sudo apt install nginx
+```
+
+```bash
+sudo systemctl status nginx
+```
+
 ![cap web 1](./cap_mark/cap_web_1.png)
 ---
 
 Obrim el navegador i comprovem que funciona.
 
 ![cap web 2](./cap_mark/cap_web_2.png)
+
+```bash
+http://IP_WEB_SERVER
+```
 
 ![cap web 3](./cap_mark/cap_web_3.png)
 -
@@ -74,30 +86,63 @@ Configurem les adreces IP amb Netplan.
 
 Instal·lem el servidor FTP.
 
+```bash
+sudo apt install vsftpd -y
+```
+
 ![cap ftp 5](./cap_mark/cap_ftp_5.png)
 ---
 
 Configuració FTP (/etc/vsftpd.conf)
+
+```bash
+sudo nano /etc/vsftpd.conf
+```
 
 ![cap ftp 6](./cap_mark/cap_ftp_6.png)
 ---
 
 Recarreguem i activem el servei.
 
+```bash
+sudo systemctl restart vsftpd
+```
+```bash
+sudo systemctl enable nginx
+```
+
 ![cap ftp 7](./cap_mark/cap_ftp_7.png)
 ---
 
 Creem la carpeta destinada al servidor FTP.
+
+```bash
+sudo mkdir -p ftp/files
+```
 
 ![cap ftp 8](./cap_mark/cap_ftp_8.png)
 ---
 
 Assignem els permisos corresponents.
 
+```bash
+sudo chown root:root /home/USER/ftp
+```
+```bash
+sudo chown -R root:root /home/USER/ftp
+```
+```bash
+sudo chmod 755 /home/USER/ftp
+```
+
 ![cap ftp 9](./cap_mark/cap_ftp_9.png)
 ---
 
 Comprovem el funcionament del servidor FTP.
+
+```bash
+sftp IP_SERVER_FTP
+```
 
 ![cap ftp 10](./cap_mark/cap_ftp_10.png)
 ---
@@ -120,6 +165,14 @@ Canviem el nom de l’equip (hostname)
 ---
 
 Instal·lem MySQL
+
+```bash
+sudo apt install mysql-server -y
+```
+
+```bash
+sudo systemctl status mysql
+```
 
 ![cap bbdd 4](./cap_mark/cap_bbdd_4.png)
 ---
