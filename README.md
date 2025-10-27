@@ -29,7 +29,8 @@ El projecte es desenvoluparà durant sis setmanes, dividit en tres sprints quinz
 ## Esquema de les màquines
 Hem decidit distribuir les màquines i els serveis d’aquesta manera, ja que considerem que és l’opció més òptima i senzilla de configurar i gestionar.
 
-![cap 1](./cap_mark/cap_1.png)
+![cap web 0](./cap_mark/cap_1.png)
+
 
 ## Màquines Virtuals
 
@@ -47,6 +48,7 @@ Instal·lem Nginx.
 Obrim el navegador i comprovem que funciona.
 
 ![cap web 2](./cap_mark/cap_web_2.png)
+
 ![cap web 3](./cap_mark/cap_web_3.png)
 -
 ### DHCP i DNS
@@ -126,5 +128,27 @@ Creem l’usuari bchecker amb els privilegis corresponents.
 
 ![cap bbdd 5](./cap_mark/cap_bbdd_5.png)
 ---
+
+Creació de la taula, i dels seus atributs:
+
+![cap bbdd 5](./cap_mark/cap_bbdd_6.png)
+
+![cap bbdd 5](./cap_mark/cap_bbdd_7.png)
+
+```bash
+mysql> LOAD DATA INFILE '/var/lib/mysql-files/escuelas_barna.csv' 
+    -> INTO TABLE escuelas_barna_plana 
+    -> CHARACTER SET utf8mb4 
+    -> FIELDS TERMINATED BY ',' 
+    -> ENCLOSED BY '"' 
+    -> LINES TERMINATED BY '\n' 
+    -> IGNORE 1 ROWS;
+ERROR 1300 (HY000): Invalid utf8mb4 character string: ''
+mysql> 
+
+```
+---
+
+
 
 ### SSH
