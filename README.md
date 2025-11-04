@@ -202,7 +202,7 @@ sftp IP_SERVER_FTP
 Configuració de xarxa
 
 
-Per configurar la xarxa, s'ha de modificar el fitxer /etc/netplan/FITXER_DE_XARXA (habitualment "00-installer-config.yaml)
+Per configurar la xarxa, s'ha de modificar el fitxer /etc/netplan/FITXER_DE_XARXA (habitualment "00-installer-config.yaml).
 
 ```bash
 network:
