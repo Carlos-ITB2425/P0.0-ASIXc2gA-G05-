@@ -39,14 +39,24 @@ Configurem el nom de l’equip (hostname) i la xarxa (adreça IP).
 
 
 ```bash
-sudo nano /etc/hostname
+sudo echo "W-NOM_SRV" > /etc/hostname
+
 ```
-W-NOM_SRV
 
 Per configurar la xarxa, s'ha de modificar el fitxer /etc/netplan/FITXER_DE_XARXA (habitualment "00-installer-config.yaml)
 
 ```bash
-1654656546546
+network:
+  ethernets:
+    enp1s0:
+      dhcp4: true
+    enp2s0:
+      dhcp4: true
+    enp3s0:
+      dhcp4: false
+      addresses: [192.168.150.1/24]
+version: 2
+
 ```
 
 
