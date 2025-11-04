@@ -20,21 +20,21 @@ Desplegament d’infraestructura
     - [SSH](#ssh)
 4. [Conclusions](#conclusions)
 
-## Introducció
+## <u>Introducció</u>
 En aquesta pràctica es prepara i desplega la infraestructura d’una aplicació multicapa que integra diversos serveis de xarxa i sistemes, com ara servidor web, monitor de xarxa, accés SSH, base de dades, serveis DHCP, DNS i FTP. L’objectiu és dissenyar, configurar i documentar un entorn complet que permeti el funcionament coordinat d’aquests serveis dins d’una arquitectura organitzada en diferents xarxes (DMZ, Intranet i NAT).
 
 El projecte es desenvoluparà durant sis setmanes, dividit en tres sprints quinzenals, i inclourà la planificació de tasques al Proofhub, la configuració dels equips, la creació d’un repositori Git amb tota la documentació i la implementació d’una aplicació que mostri les dades carregades a la base de dades.
 
 
-## Esquema de les màquines
+## <u>Esquema de les màquines</u>
 Hem decidit distribuir les màquines i els serveis d’aquesta manera, ja que considerem que és l’opció més òptima i senzilla de configurar i gestionar.
 
 ![cap web 0](./cap_mark/cap_1.png)
 
 
-## Màquines Virtuals
+## <u>Màquines Virtuals</u>
 
-### Web Server
+### <u>Web Server</u>
 Configurem el nom de l’equip (hostname) i la xarxa (adreça IP).
 
 
@@ -83,11 +83,11 @@ http://IP_WEB_SERVER
 ![cap web 1](./cap_mark/cap_web_1.png)
 
 ---
-### DHCP i DNS
+### <u>DHCP i DNS</u>
 
 ---
 
-### FTP
+### <u>FTP</u>
 
 ---
 
@@ -197,7 +197,7 @@ sftp IP_SERVER_FTP
 ![cap ftp 1](./cap_mark/cap_ftp_1.png)
 ---
 
-### BBDD
+### <u>BBDD</u>
 
 Configuració de xarxa
 
@@ -401,6 +401,6 @@ SELECT COUNT(*) FROM NOM_TAULA
 ---
 
 
-### SSH
+### <u>SSH</u>
 
-## Conclusions
+## <u>Conclusions</u>
