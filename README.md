@@ -37,7 +37,19 @@ Hem decidit distribuir les màquines i els serveis d’aquesta manera, ja que co
 ### Web Server
 Configurem el nom de l’equip (hostname) i la xarxa (adreça IP).
 
-![cap web 0](./cap_mark/cap_web_0.png)
+
+```bash
+sudo nano /etc/hostname
+```
+W-NOM_SRV
+
+Per configurar la xarxa, s'ha de modificar el fitxer /etc/netplan/FITXER_DE_XARXA (habitualment "00-installer-config.yaml)
+
+```bash
+1654656546546
+```
+
+
 ---
 
 Instal·lem Nginx.
@@ -49,39 +61,60 @@ sudo apt install nginx
 ```bash
 sudo systemctl status nginx
 ```
-
-![cap web 1](./cap_mark/cap_web_1.png)
 ---
 
 Obrim el navegador i comprovem que funciona.
 
-![cap web 2](./cap_mark/cap_web_2.png)
 
 ```bash
 http://IP_WEB_SERVER
 ```
 
-![cap web 3](./cap_mark/cap_web_3.png)
--
+![cap web 1](./cap_mark/cap_web_1.png)
+
+---
 ### DHCP i DNS
 
+---
 
 ### FTP
-Creem un usuari i li assignem els permisos corresponents.
 
-![cap ftp 1](./cap_mark/cap_ftp_1.png)
 ---
 
 Canviem el nom de l’equip (hostname).
 
-![cap ftp 2](./cap_mark/cap_ftp_2.png)
+```bash
+sudo nano /etc/hostname
+F-NCC
+```
+
 ---
 
 Configurem les adreces IP amb Netplan.
 
-![cap ftp 3](./cap_mark/cap_ftp_3.png)
+```bash
+sudo nano /etc/netplan/00-installer-config.yaml
+```
 
-![cap ftp 4](./cap_mark/cap_ftp_4.png)
+```bash
+
+network:
+  ethernets:
+    enp1s0:
+      dhcp4: true
+    enp2s0:
+      dhcp4: false
+      addresses: [192.168.150.2/24]
+    enp3s0:
+      dhcp4: false
+      addresses: [192.168.150.2/24]
+version: 2
+```
+
+```bash
+sudo netplan try
+sudo netplan apply
+```
 ---
 
 Instal·lem el servidor FTP.
@@ -90,7 +123,6 @@ Instal·lem el servidor FTP.
 sudo apt install vsftpd -y
 ```
 
-![cap ftp 5](./cap_mark/cap_ftp_5.png)
 ---
 
 Configuració FTP (/etc/vsftpd.conf)
@@ -99,7 +131,18 @@ Configuració FTP (/etc/vsftpd.conf)
 sudo nano /etc/vsftpd.conf
 ```
 
-![cap ftp 6](./cap_mark/cap_ftp_6.png)
+```bash
+listen=YES
+chroot_local_user=YES
+allow_writeable_chroot=YES
+pasv_min_port=40000
+passv_address=192.168.150.2
+listen_ipv6=NO
+anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+```
+
 ---
 
 Recarreguem i activem el servei.
@@ -111,7 +154,6 @@ sudo systemctl restart vsftpd
 sudo systemctl enable nginx
 ```
 
-![cap ftp 7](./cap_mark/cap_ftp_7.png)
 ---
 
 Creem la carpeta destinada al servidor FTP.
@@ -120,7 +162,6 @@ Creem la carpeta destinada al servidor FTP.
 sudo mkdir -p ftp/files
 ```
 
-![cap ftp 8](./cap_mark/cap_ftp_8.png)
 ---
 
 Assignem els permisos corresponents.
@@ -135,7 +176,6 @@ sudo chown -R root:root /home/USER/ftp
 sudo chmod 755 /home/USER/ftp
 ```
 
-![cap ftp 9](./cap_mark/cap_ftp_9.png)
 ---
 
 Comprovem el funcionament del servidor FTP.
@@ -144,24 +184,50 @@ Comprovem el funcionament del servidor FTP.
 sftp IP_SERVER_FTP
 ```
 
-![cap ftp 10](./cap_mark/cap_ftp_10.png)
+![cap ftp 1](./cap_mark/cap_ftp_1.png)
 ---
 
 ### BBDD
 
 Configuració de xarxa
 
-![cap bbdd 1](./cap_mark/cap_bbdd_1.png)
+
+Per configurar la xarxa, s'ha de modificar el fitxer /etc/netplan/FITXER_DE_XARXA (habitualment "00-installer-config.yaml)
+
+```bash
+network:
+  version: 2
+  renderer: NetworkManager
+  ethernets:
+    enp1s0:
+      dhcp4: true
+    enp2s0:
+      dhcp4: no
+      addresses: [192.168.50.250/24] (Ip Client)
+    enp3s0:
+      dhcp4: no
+      addresses: [192.168.150.250/24] (Ip DMZ)
+```
+
 ---
 
 Creem l’usuari bchecker i li assignem els privilegis corresponents
 
-![cap bbdd 2](./cap_mark/cap_bbdd_2.png)
+```bash
+sudo adduser bchecker (Creació de l’usuari)
+sudo passwd bchecker (Configuració de la contrasenya) 
+sudo usermod -aG sudo bchecker (Adició al grup sudo per tenir privilegis)
+groups
+```
+
 ---
 
 Canviem el nom de l’equip (hostname)
 
-![cap bbdd 3](./cap_mark/cap_bbdd_3.png)
+```bash
+sudo nano /etc/hostname
+```
+
 ---
 
 Instal·lem MySQL
@@ -174,12 +240,21 @@ sudo apt install mysql-server -y
 sudo systemctl status mysql
 ```
 
-![cap bbdd 4](./cap_mark/cap_bbdd_4.png)
 ---
 
 Creem l’usuari bchecker amb els privilegis corresponents.
 
-![cap bbdd 5](./cap_mark/cap_bbdd_5.png)
+```bash
+CREATE USER 'bchecker'@'localhost' IDENTIFIED BY 'bchecker123'; (Usuari + contrasenya)
+
+GRANT ALL PRIVILEGES ON *.* TO 'bchecker'@'localhost' WITH GRANT OPTION; (Cessió de permissos)
+
+FLUSH PRIVILEGES;
+
+EXIT;
+
+```
+
 ---
 
 Creació de la taula, i dels seus atributs:
@@ -188,13 +263,13 @@ Creació de la taula, i dels seus atributs:
 show tables
 ```
 
-![cap bbdd 5](./cap_mark/cap_bbdd_6.png)
+![cap bbdd 1](./cap_mark/cap_bbdd_1.png)
 
 ```bash
 desc NOM_TAULA
 ```
 
-![cap bbdd 5](./cap_mark/cap_bbdd_7.png)
+![cap bbdd 2](./cap_mark/cap_bbdd_2.png)
 
 ```bash
 mysql> LOAD DATA INFILE '/var/lib/mysql-files/escuelas_barna.csv' 
@@ -275,8 +350,7 @@ IGNORE 1 ROWS
     @temp_end_date,
     timetable
 )
-```
-```bash
+
 SET 
     -- Identificadors processats
     register_id                = SUBSTRING(@temp_register_id, 2) + 0,
@@ -304,7 +378,7 @@ SET
 
 ---
 
-Durant el procés vam patir diversos errors de codificació del CSV, per tant, vam haver de passar l’arxiu a utf-8 per evitar problemes.
+Durant el procés, vam patir diversos errors de codificació del CSV, per tant, vam haver de passar l’arxiu a utf-8 per evitar problemes.
 
 Una vegada hem fet les correccions, comprovem que les dades s’han inserit de forma correcta:
 
@@ -312,9 +386,9 @@ Una vegada hem fet les correccions, comprovem que les dades s’han inserit de f
 SELECT COUNT(*) FROM NOM_TAULA
 ```
 
-![cap bbdd 5](./cap_mark/cap_bbdd_8.png)
+![cap bbdd 3](./cap_mark/cap_bbdd_3.png)
 
-
+---
 
 
 ### SSH
