@@ -1,6 +1,6 @@
 # Activitat Pràctica P0.0  ![logo git](./cap_mark/logo_git.png)
 
-**Elaborat per:** Adrián González, Sharam Khan, Carlos Rodríguez, Francisco Díaz  
+**Elaborat per:** *Adrián González, Sharam Khan, Carlos Rodríguez, Francisco Díaz*  
 **Data:** Octubre 2025/26  
 
 **Pràctica:**  
