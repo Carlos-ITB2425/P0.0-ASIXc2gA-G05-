@@ -94,8 +94,8 @@ http://IP_WEB_SERVER
 Canviem el nom de l’equip (hostname).
 
 ```bash
-sudo nano /etc/hostname
-F-NCC
+sudo echo "F-NCC" > /etc/hostname
+
 ```
 
 ---
