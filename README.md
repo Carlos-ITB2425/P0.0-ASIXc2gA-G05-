@@ -31,6 +31,12 @@ Hem decidit distribuir les màquines i els serveis d’aquesta manera, ja que co
 
 ![cap web 0](./cap_mark/cap_1.png)
 
+## <u>Estudi de mercat</u>
+Abans de començar el projecte, vam decidir fer un estudi previ de les tecnologies que voliem utilitzar. Desrpés d'una intensa recerca, ens vam decantar per aquestes
+  - Base de dades (MySQL): Ho marcava a les pautes de l'enunciat
+  - Web Server (NGINX): L'any passat vam utilitzar varis motors per webs, i creiem que NGINX és el millor per aquest entorn
+  - Router (IpTables): Després d'haver intentat implementar el Proxmox a l'Isard, degut a l'alta complexitat i impossibilitat, vam haver de buscar altres alternatives, i ens vam quedar amb IpTables
+
 
 ## <u>Màquines Virtuals</u>
 
@@ -40,7 +46,6 @@ Configurem el nom de l’equip (hostname) i la xarxa (adreça IP).
 
 ```bash
 sudo echo "W-NOM_SRV" > /etc/hostname
-
 ```
 
 Per configurar la xarxa, s'ha de modificar el fitxer /etc/netplan/FITXER_DE_XARXA (habitualment "00-installer-config.yaml)
@@ -56,7 +61,6 @@ network:
       dhcp4: false
       addresses: [192.168.150.1/24]
 version: 2
-
 ```
 
 
@@ -95,7 +99,6 @@ Canviem el nom de l’equip (hostname).
 
 ```bash
 sudo echo "F-NCC" > /etc/hostname
-
 ```
 
 ---
