@@ -1,6 +1,6 @@
 # Activitat Pràctica P0.0  ![logo git](./cap_mark/logo_git.png)
 
-**Elaborat per:** *Adrián González, Sharam Khan, Carlos Rodríguez, Francisco Díaz*  
+**Elaborat per:** *Adrián González, (Sharam Khan), Carlos Rodríguez, Francisco Díaz*  
 **Data:** Octubre 2025/26  
 
 **Pràctica:**  
@@ -39,6 +39,7 @@ Abans de començar el projecte, vam decidir fer un estudi previ de les tecnologi
 
 
 ## <u>Màquines Virtuals</u>
+Al no haver-hi cap software exigit per l'activitat ,hem decidit utilitzar les màquines virtuals del servei al núvol ISARD per la seva simplicitat a l'hora de configurar les seves característiques. D'aquesta manera assegurem que podem connectar les nostres màquinas de forma ràpida i senzilla.
 
 ### <u>Web Server</u>
 Configurem el nom de l’equip (hostname) i la xarxa (adreça IP).
