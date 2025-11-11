@@ -31,6 +31,11 @@ Hem decidit distribuir les màquines i els serveis d’aquesta manera, ja que co
 
 ![cap web 0](./cap_mark/cap_1.png)
 
+## <u>Estudi de mercat</u>
+Abans de començar el projecte, vam decidir fer un estudi previ de les tecnologies que voliem utilitzar. Desrpés d'una intensa recerca, ens vam decantar per aquestes
+  - Base de dades (MySQL): Ho marcava a les pautes de l'enunciat
+  - Web Server (NGINX): L'any passat vam utilitzar varis motors per webs, i creiem que NGINX és el millor per aquest entorn
+  - Router (IpTables): Després d'haver intentat implementar el Proxmox a l'Isard, degut a l'alta complexitat i impossibilitat, vam haver de buscar altres alternatives, i ens vam quedar amb IpTables
 
 ## <u>Màquines Virtuals</u>
 Al no haver-hi cap software exigit per l'activitat ,hem decidit utilitzar les màquines virtuals del servei al núvol ISARD per la seva simplicitat a l'hora de configurar les seves característiques. D'aquesta manera assegurem que podem connectar les nostres màquinas de forma ràpida i senzilla.
