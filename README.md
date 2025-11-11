@@ -33,7 +33,7 @@ Hem decidit distribuir les màquines i els serveis d’aquesta manera, ja que co
 
 
 ## <u>Màquines Virtuals</u>
-Al no haver-hi cap software exigit per l'activitat ,hem decidit utilitzar les màquines virtuals del servei al núvol ISARD per la seva simplicitat a l'hora de configurar les seves característiques. D'aquesta manera assegurem que podem connectar les noestres màquinas de forma ràpida i senzilla.
+Al no haver-hi cap software exigit per l'activitat ,hem decidit utilitzar les màquines virtuals del servei al núvol ISARD per la seva simplicitat a l'hora de configurar les seves característiques. D'aquesta manera assegurem que podem connectar les nostres màquinas de forma ràpida i senzilla.
 
 ### <u>Web Server</u>
 Configurem el nom de l’equip (hostname) i la xarxa (adreça IP).
