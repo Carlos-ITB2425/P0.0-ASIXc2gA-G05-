@@ -89,8 +89,45 @@ http://IP_WEB_SERVER
 ![cap web 1](./cap_mark/cap_web_1.png)
 
 ---
-### <u>DHCP i DNS</u>
+### <u>ROUTER, DHCP i DNS</u>
 
+Canviem el nom de l’equip (hostname).
+```bash
+sudo echo "ROUTERG05" > /etc/hostname
+
+```
+---
+
+Configurem les adreces IP amb Netplan.
+
+```bash
+sudo nano /etc/netplan/00-installer-config.yaml
+```
+
+```bash
+network:
+  version: 2
+  ethernets:
+    enp1s0:
+      dhcp4: true
+    enp2s0:
+      dhcp4: false
+      addresses:
+        - 192.168.50.1/24
+    enp3s0:
+      dhcp4: false
+      addresses:
+        - 192.168.150.1/24
+```
+---
+Configurem la redireccion de paquets
+
+```bash
+sudo nano /etc/sysctl.conf 
+```
+```bash
+net.ipv4.ip_forward=1
+```
 ---
 
 ### <u>FTP</u>
