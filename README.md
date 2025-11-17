@@ -90,6 +90,8 @@ http://IP_WEB_SERVER
 
 ---
 ### <u>ROUTER, DHCP i DNS</u>
+#### <u>ROUTER</u>
+
 
 Canviem el nom de l’equip (hostname).
 ```bash
@@ -130,6 +132,176 @@ net.ipv4.ip_forward=1
 ```
 ---
 
+Configurem el iptables per la connexió entre xarxes
+
+```bash
+sudo nano ./firewall-router-completo.sh
+```
+```bash
+#!/bin/bash
+
+# === DEFINICIÓN DE INTERFACES ===
+IF_WAN="enp1s0"   # Internet (192.168.123.x)
+IF_LAN="enp2s0"   # Clientes (192.168.50.x)
+IF_DMZ="enp3s0"   # Servidores (192.168.150.x)
+
+# === 1. LIMPIEZA (FLUSH) ===
+# Borramos cualquier regla anterior para empezar de cero
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
+iptables -t mangle -F
+iptables -t mangle -X
+
+# === 2. POLÍTICAS POR DEFECTO ===
+# Por seguridad: Si no está explícitamente permitido, SE BLOQUEA.
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
+
+# === 3. REGLAS BÁSICAS ===
+# Permitir tráfico de loopback (lo)
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+# Permitir conexiones YA ESTABLECIDAS (Stateful Inspection)
+# Vital: Si la LAN pide algo a Google, deja entrar la respuesta de Google.
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Permitir Ping (ICMP) para diagnóstico (Opcional, recomendado)
+iptables -A INPUT -p icmp -j ACCEPT
+iptables -A FORWARD -p icmp -j ACCEPT
+
+# === 4. REGLAS DE REENVÍO (FORWARD) ===
+
+# A. LAN (enp2s0) -> INTERNET (enp1s0): PERMITIR
+iptables -A FORWARD -i $IF_LAN -o $IF_WAN -j ACCEPT
+
+# B. LAN (enp2s0) -> DMZ (enp3s0): PERMITIR
+# Para que tú puedas administrar los servidores desde la red de clientes.
+iptables -A FORWARD -i $IF_LAN -o $IF_DMZ -j ACCEPT
+
+# C. DMZ (enp3s0) -> INTERNET (enp1s0): PERMITIR
+# Para que los servidores puedan actualizarse (apt update, etc).
+iptables -A FORWARD -i $IF_DMZ -o $IF_WAN -j ACCEPT
+
+# D. DMZ -> LAN: BLOQUEADO (Por política por defecto DROP)
+# Si hackean un server en la DMZ, NO podrán acceder a tus clientes en la LAN.
+
+# === 5. NAT (ENMASCARAMIENTO) ===
+# Esto permite que LAN y DMZ salgan a internet usando la IP de enp1s0
+iptables -t nat -A POSTROUTING -o $IF_WAN -j MASQUERADE
+
+echo "Reglas de firewall aplicadas correctamente."
+```
+---
+
+#### <u>DHCP</u>
+
+El objetivo es que cada red reciba **su gateway correcto**, para que BD y Web puedan comunicarse entre ellas a través del router.
+
+Archivos de configuración del dhcp:
+
+```bash
+sudo nano /etc/dhcp/dhcpd.conf
+```
+
+```bash
+# /etc/dhcp/dhcpd.conf
+#
+# Configuración DHCP para ROUTERG05
+#
+
+authoritative;
+default-lease-time 600;
+max-lease-time 7200;
+log-facility local7;
+
+# DNS globales
+option domain-name-servers 8.8.8.8, 8.8.4.4;
+
+####################################
+#   RED LAN 192.168.50.0/24
+####################################
+subnet 192.168.50.0 netmask 255.255.255.0 {
+  range 192.168.50.100 192.168.50.200;
+  option routers 192.168.50.1;
+  option subnet-mask 255.255.255.0;
+  option broadcast-address 192.168.50.255;
+  option domain-name "lan.local";
+}
+
+# --- Reservas (LAN) ---
+# Servidor BD (base de datos)
+host servidor-bd {
+  hardware ethernet 52:54:00:1b:62:8f; 
+  fixed-address 192.168.150.30;
+}
+
+####################################
+#   RED DMZ 192.168.150.0/24
+####################################
+subnet 192.168.150.0 netmask 255.255.255.0 {
+  range 192.168.150.100 192.168.150.200;
+  option routers 192.168.150.1;
+  option subnet-mask 255.255.255.0;
+  option broadcast-address 192.168.150.255;
+  option domain-name "dmz.local";
+}
+
+# --- Reservas (DMZ) ---
+# Servidor Web
+host servidor-web {
+  hardware ethernet 52:54:00:3d:19:f2; 
+  fixed-address 192.168.150.40;
+}
+
+# Servidor FTP
+host servidor-ftp {
+  hardware ethernet 52:54:00:6c:be:6a; 
+  fixed-address 192.168.150.2;
+}
+
+```
+
+```bash
+sudo systemctl restart isc-dhcp-server
+```
+
+---
+
+## <u>COMPROBACIONES</u>
+
+### 1. BD → Router
+
+```bash
+ping 192.168.50.1
+```
+
+### 2. BD → Web
+
+```bash
+ping 192.168.150.30
+```
+
+### 3. Web → BD
+
+```bash
+ping 192.168.50.30
+```
+
+### 4. SSH desde Web hacia BD
+
+```bash
+ssh usuario@192.168.50.30
+```
+
+---
+#### <u>DNS</u>
+
+---
 ### <u>FTP</u>
 
 ---
