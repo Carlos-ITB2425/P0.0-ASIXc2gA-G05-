@@ -202,6 +202,8 @@ echo "Reglas de firewall aplicadas correctamente."
 
 L'objectiu és que cada xarxa rebi **la seva porta d'enllaç correcta**, perquè la BD i la Web es puguin comunicar entre elles a través del router.
 
+---
+
 ##### Fitxers de configuració del DHCP:
 Interfícies DHCP:
 
@@ -212,6 +214,7 @@ sudo nano /etc/default/isc-dhcp-server
 ```bash
 INTERFACESv4="enp2s0 enp3s0"
 ```
+---
 
 Configuració principal DHCP:
 
@@ -283,27 +286,27 @@ sudo systemctl restart isc-dhcp-server
 
 -----
 
-## \<u\>COMPROVACIONS\</u\>
+##### COMPROVACIONS
 
-### 1\. BD → Router
+###### 1\. BD → Router
 
 ```bash
 ping 192.168.50.1
 ```
 
-### 2\. BD → Web
+###### 2\. BD → Web
 
 ```bash
 ping 192.168.150.40
 ```
 
-### 3\. Web → BD
+###### 3\. Web → BD
 
 ```bash
 ping 192.168.150.30
 ```
 
-### 4\. SSH des de Web cap a BD
+###### 4\. SSH des de Web cap a BD
 
 ```bash
 ssh usuario@192.168.150.30
