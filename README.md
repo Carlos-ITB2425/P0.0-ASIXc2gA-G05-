@@ -200,9 +200,20 @@ echo "Reglas de firewall aplicadas correctamente."
 
 #### <u>DHCP</u>
 
-El objetivo es que cada red reciba **su gateway correcto**, para que BD y Web puedan comunicarse entre ellas a través del router.
+L'objectiu és que cada xarxa rebi **la seva porta d'enllaç correcta**, perquè la BD i la Web es puguin comunicar entre elles a través del router.
 
-Archivos de configuración del dhcp:
+##### Fitxers de configuració del DHCP:
+Interfícies DHCP:
+
+```bash
+sudo nano /etc/default/isc-dhcp-server
+```
+
+```bash
+INTERFACESv4="enp2s0 enp3s0"
+```
+
+Configuració principal DHCP:
 
 ```bash
 sudo nano /etc/dhcp/dhcpd.conf
@@ -211,7 +222,7 @@ sudo nano /etc/dhcp/dhcpd.conf
 ```bash
 # /etc/dhcp/dhcpd.conf
 #
-# Configuración DHCP para ROUTERG05
+# Configuració DHCP per a ROUTERG05
 #
 
 authoritative;
@@ -219,11 +230,11 @@ default-lease-time 600;
 max-lease-time 7200;
 log-facility local7;
 
-# DNS globales
+# DNS globals
 option domain-name-servers 8.8.8.8, 8.8.4.4;
 
 ####################################
-#   RED LAN 192.168.50.0/24
+#   XARXA LAN 192.168.50.0/24
 ####################################
 subnet 192.168.50.0 netmask 255.255.255.0 {
   range 192.168.50.100 192.168.50.200;
@@ -233,15 +244,15 @@ subnet 192.168.50.0 netmask 255.255.255.0 {
   option domain-name "lan.local";
 }
 
-# --- Reservas (LAN) ---
-# Servidor BD (base de datos)
+# --- Reserves (LAN) ---
+# Servidor BD (base de dades)
 host servidor-bd {
   hardware ethernet 52:54:00:1b:62:8f; 
   fixed-address 192.168.150.30;
 }
 
 ####################################
-#   RED DMZ 192.168.150.0/24
+#   XARXA DMZ 192.168.150.0/24
 ####################################
 subnet 192.168.150.0 netmask 255.255.255.0 {
   range 192.168.150.100 192.168.150.200;
@@ -251,7 +262,7 @@ subnet 192.168.150.0 netmask 255.255.255.0 {
   option domain-name "dmz.local";
 }
 
-# --- Reservas (DMZ) ---
+# --- Reserves (DMZ) ---
 # Servidor Web
 host servidor-web {
   hardware ethernet 52:54:00:3d:19:f2; 
@@ -270,32 +281,32 @@ host servidor-ftp {
 sudo systemctl restart isc-dhcp-server
 ```
 
----
+-----
 
-## <u>COMPROBACIONES</u>
+## \<u\>COMPROVACIONS\</u\>
 
-### 1. BD → Router
+### 1\. BD → Router
 
 ```bash
 ping 192.168.50.1
 ```
 
-### 2. BD → Web
+### 2\. BD → Web
+
+```bash
+ping 192.168.150.40
+```
+
+### 3\. Web → BD
 
 ```bash
 ping 192.168.150.30
 ```
 
-### 3. Web → BD
+### 4\. SSH des de Web cap a BD
 
 ```bash
-ping 192.168.50.30
-```
-
-### 4. SSH desde Web hacia BD
-
-```bash
-ssh usuario@192.168.50.30
+ssh usuario@192.168.150.30
 ```
 
 ---
