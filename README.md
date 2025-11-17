@@ -12,7 +12,7 @@ Desplegament d’infraestructura
 
 1. [Introducció](#introducció)
 2. [Esquema de les màquines](#esquema-de-les-màquines)
-3. [Màquines Virtuals](#maquines-virtuals)  
+3. [Màquines Virtuals](#màquines-virtuals)  
     - [Web Server](#web-server)
     - [DHCP i DNS](#dhcp-i-dns)
     - [FTP](#ftp)
