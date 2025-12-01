@@ -90,7 +90,7 @@ http://IP_WEB_SERVER
 
 ---
 ### <u>ROUTER, DHCP i DNS</u>
-#### <u>ROUTER</u>
+#### ROUTER
 
 
 Canviem el nom de l’equip (hostname).
@@ -198,7 +198,7 @@ echo "Reglas de firewall aplicadas correctamente."
 ```
 ---
 
-#### <u>DHCP</u>
+#### DHCP
 
 L'objectiu és que cada xarxa rebi **la seva porta d'enllaç correcta**, perquè la BD i la Web es puguin comunicar entre elles a través del router.
 
@@ -224,60 +224,28 @@ sudo nano /etc/dhcp/dhcpd.conf
 
 ```bash
 # /etc/dhcp/dhcpd.conf
-#
-# Configuració DHCP per a ROUTERG05
-#
-
 authoritative;
 default-lease-time 600;
 max-lease-time 7200;
 log-facility local7;
 
-# DNS globals
-option domain-name-servers 8.8.8.8, 8.8.4.4;
+# DNS Globales (Sirven para la LAN)
+option domain-name "g05";
+option domain-name-servers 192.168.50.1, 192.168.150.1;
 
 ####################################
-#   XARXA LAN 192.168.50.0/24
+#   RED LAN 192.168.50.0/24
 ####################################
 subnet 192.168.50.0 netmask 255.255.255.0 {
   range 192.168.50.100 192.168.50.200;
   option routers 192.168.50.1;
   option subnet-mask 255.255.255.0;
   option broadcast-address 192.168.50.255;
-  option domain-name "lan.local";
 }
 
-# --- Reserves (LAN) ---
-# Servidor BD (base de dades)
-host servidor-bd {
-  hardware ethernet 52:54:00:1b:62:8f; 
-  fixed-address 192.168.150.30;
-}
-
-####################################
-#   XARXA DMZ 192.168.150.0/24
-####################################
+#   RED DMZ 192.168.150.0/24 
 subnet 192.168.150.0 netmask 255.255.255.0 {
-  range 192.168.150.100 192.168.150.200;
-  option routers 192.168.150.1;
-  option subnet-mask 255.255.255.0;
-  option broadcast-address 192.168.150.255;
-  option domain-name "dmz.local";
 }
-
-# --- Reserves (DMZ) ---
-# Servidor Web
-host servidor-web {
-  hardware ethernet 52:54:00:3d:19:f2; 
-  fixed-address 192.168.150.40;
-}
-
-# Servidor FTP
-host servidor-ftp {
-  hardware ethernet 52:54:00:6c:be:6a; 
-  fixed-address 192.168.150.2;
-}
-
 ```
 
 ```bash
@@ -312,8 +280,169 @@ ping 192.168.150.30
 ssh usuario@192.168.150.30
 ```
 
----
-### <u>DNS</u>
+-----
+
+#### DNS
+
+L'objectiu és que els equips puguin resoldre els noms de domini intern (`.g05`) tant de la LAN com de la DMZ, i que el servidor accepti peticions des de les dues xarxes.
+
+-----
+
+##### Fitxers de configuració del DNS:
+
+Opcions globals i permisos (ACLs):
+
+```bash
+sudo nano /etc/bind/named.conf.options
+```
+
+```bash
+options {
+    directory "/var/cache/bind";
+
+    # Escoltam a totes les interfícies (LAN, DMZ, Loopback)
+    listen-on { any; };
+    listen-on-v6 { any; };
+
+    # Permetem consultes des de la LAN (50.0) i la DMZ (150.0)
+    allow-query { localhost; 192.168.50.0/24; 192.168.150.0/24; };
+
+    # Reenviadors per sortir a Internet (Google, Cloudflare)
+    forwarders {
+        8.8.8.8;
+        1.1.1.1;
+    };
+
+    dnssec-validation no;
+};
+```
+
+-----
+
+Declaració de les zones (Local):
+
+```bash
+sudo nano /etc/bind/named.conf.local
+```
+
+```bash
+# Zona Directa
+zone "g05" {
+    type master;
+    file "/var/lib/bind/db.g05";
+};
+
+# Zona Inversa LAN (50.168.192)
+zone "50.168.192.in-addr.arpa" {
+    type master;
+    file "/var/lib/bind/db.192.168.50";
+};
+
+# Zona Inversa DMZ (150.168.192)
+zone "150.168.192.in-addr.arpa" {
+    type master;
+    file "/var/lib/bind/db.192.168.150";
+};
+```
+
+-----
+
+Fitxer de Zona Directa (`db.g05`):
+
+```bash
+sudo cp /etc/bind/db.local /var/lib/bind/db.g05
+sudo nano /var/lib/bind/db.g05
+```
+
+```bash
+; BIND data file for g05
+$TTL    604800
+@       IN      SOA     RDD-N05.g05. root.g05. (
+                              4         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      RDD-N05.g05.
+@       IN      A       192.168.50.1
+
+; Registres A (Hosts)
+RDD-N05 IN      A       192.168.50.1    ; Router LAN
+RDD-N05 IN      A       192.168.150.1   ; Router DMZ
+B-N05   IN      A       192.168.150.30  ; Base de Dades
+W-N05   IN      A       192.168.150.40  ; Servidor Web
+F-N05   IN      A       192.168.150.2   ; Servidor FTP
+```
+
+-----
+
+Fitxer de Zona Inversa DMZ (`db.192.168.150`):
+
+```bash
+sudo cp /etc/bind/db.127 /var/lib/bind/db.192.168.150
+sudo nano /var/lib/bind/db.192.168.150
+```
+
+```bash
+; Inversa DMZ
+$TTL    604800
+@       IN      SOA     RDD-N05.g05. root.g05. (
+                              3         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      RDD-N05.g05.
+
+; Punteros (PTR) - Només l'últim octet
+1       IN      PTR     RDD-N05.g05.
+30      IN      PTR     B-N05.g05.
+40      IN      PTR     W-N05.g05.
+2       IN      PTR     F-N05.g05.
+```
+
+-----
+
+Aplicar canvis:
+
+```bash
+sudo systemctl restart named
+sudo systemctl status named
+```
+
+-----
+
+##### COMPROVACIONS DNS
+
+###### 1\. Client LAN resolent Servidor Web (DMZ)
+
+```bash
+nslookup W-N05.g05
+# Hauria de tornar: 192.168.150.40
+```
+
+###### 2\. Servidor Web resolent Base de Dades
+
+```bash
+nslookup B-N05.g05
+# Hauria de tornar: 192.168.150.30
+```
+
+###### 3\. Resolució Inversa (IP a Nom)
+
+```bash
+nslookup 192.168.150.30
+# Hauria de tornar: B-N05.g05.
+```
+
+###### 4\. Resolució Externa (Internet)
+
+```bash
+nslookup google.com
+# Hauria de tornar la IP pública de Google
+```
 
 ---
 ### <u>FTP</u>
