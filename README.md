@@ -30,8 +30,6 @@ El projecte es desenvoluparà durant sis setmanes, dividit en tres sprints quinz
 Hem decidit distribuir les màquines i els serveis d’aquesta manera, ja que considerem que és l’opció més òptima i senzilla de configurar i gestionar.
 #### Esquema estructura
 ![esquema maquinas](./cap_mark/esquema_estructura.png)
-#### Esquema de Git
-![cap web 0](./cap_mark/cap_1.png)
 
 ## <u>Estudi de mercat</u>
 Abans de començar el projecte, vam decidir fer un estudi previ de les tecnologies que voliem utilitzar. Desrpés d'una intensa recerca, ens vam decantar per aquestes
