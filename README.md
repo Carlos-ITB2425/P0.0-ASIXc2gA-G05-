@@ -758,6 +758,13 @@ SELECT COUNT(*) FROM NOM_TAULA
 
 ### <u>SSH</u>
 
+```bash
+sudo apt install ssh openssh-server
+```
 ## <u>Conclusions</u>
 
-#### Gràcies a Sharam per la seva col·laboració mentre formava part del mòdul. <3
+#### Organització
+ - Hem après a treballar en equip a un projecte amb una metodologia agile, com SCRUM.
+ - Hem descobert noves eines d'organització de tasques, com ara el ProofHub per tal d'obtenir un major rendiment
+
+#### Gràcies al Sharam Khan per la seva col·laboració mentre formava part del mòdul. <3
