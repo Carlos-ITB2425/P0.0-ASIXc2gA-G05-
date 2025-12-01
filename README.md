@@ -86,6 +86,14 @@ http://IP_WEB_SERVER
 
 ![cap web 1](./cap_mark/cap_web_1.png)
 
+Creem l'HTML per veure les taules de la base de dades
+
+![cap web 2](./cap_mark/archivos.png)
+ 
+I després de tota la configuració, aconseguim una web així
+
+![cap web 3](./cap_mark/web3.png)
+
 ---
 ### <u>ROUTER, DHCP i DNS</u>
 #### ROUTER
